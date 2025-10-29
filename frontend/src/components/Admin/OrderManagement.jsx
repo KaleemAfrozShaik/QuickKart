@@ -41,37 +41,41 @@ const OrderManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.length>0 ? (
-                            orders.map((order)=>(
-                                <tr 
-                                key={order._id}
-                                className="border-b hover:bg-gray-50 cursor-pointer"
-                                >
-                                    <td className="p-4 font-medium text-gray-900 whitespace-nowrap">#{order._id}</td>
-                                    <td className="p-4">{order.user.name}</td>
-                                    <td className="p-4">${order.totalPrice}</td>
-                                    <td className="p-4">
-                                        <select 
-                                        value={order.status} 
-                                        onChange={(e)=> handleStatusChange(order._id,e.target.value)}
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
-                                            <option value="Processing">Processing</option>
-                                            <option value="Shipped">Shipped</option>
-                                            <option value="Delivered">Delivered</option>
-                                            <option value="Cancelled">Cancelled</option>
-                                        </select>
-                                    </td>
-                                    <td className="p-4">
-                                        <button onClick={()=> handleStatusChange(order._id,"Delivered")} 
-                                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Mark as Delivered</button>
-                                    </td>
-                                </tr>
-                            ))
-                        ):(
-                            <tr>
-                                <td colSpan={5} className="p-4 text-center text-gray-500">No orders found.</td>
-                            </tr>
-                        )}
+                    {orders.length > 0 ? (
+                        orders.map((order) => (
+                        <tr key={order._id} className="border-b hover:bg-gray-50 cursor-pointer">
+                            <td className="p-4 font-medium text-gray-900 whitespace-nowrap">#{order._id}</td>
+                            <td className="p-4">{order.user?.name || "Unknown User"}</td>
+                            <td className="p-4">${order.totalPrice?.toFixed(2) || "0.00"}</td>
+                            <td className="p-4">
+                            <select
+                                value={order.status}
+                                onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                            >
+                                <option value="Processing">Processing</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            </td>
+                            <td className="p-4">
+                            <button
+                                onClick={() => handleStatusChange(order._id, "Delivered")}
+                                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                            >
+                                Mark as Delivered
+                            </button>
+                            </td>
+                        </tr>
+                        ))
+                    ) : (
+                        <tr>
+                        <td colSpan={5} className="p-4 text-center text-gray-500">
+                            No orders found.
+                        </td>
+                        </tr>
+                    )}
                     </tbody>
                 </table>
             </div>
