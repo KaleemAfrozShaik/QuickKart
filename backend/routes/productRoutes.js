@@ -2,6 +2,7 @@ const express=require("express");
 const {protect,admin} = require("../middleware/authMiddleware");
 const router = express.Router();
 const Product=require("../models/Product");
+const {searchCatalogLimiter}=require("../middleware/rateLimitMiddleware");
 
 //@route POST /api/products
 //@desc Create a new product
@@ -147,7 +148,7 @@ router.delete("/:id",protect,admin,async (req,res)=>{
 //@route GET /api/products
 //@desc GET all products woth optional query filters
 //@access Public
-router.get("/",async(req,res)=>{
+router.get("/",searchCatalogLimiter,async(req,res)=>{
     try {
         const {collection,size,color,gender,minPrice,maxPrice,sortBy,search,category,material,brand,limit}=req.query;
         let query = {};
@@ -221,7 +222,7 @@ router.get("/",async(req,res)=>{
 //@route GET /api/products/new-arrivals
 //@desc retrieve  latest 8 products - creation date
 //@access Public
-router.get("/new-arrivals",async(req,res)=>{
+router.get("/new-arrivals",searchCatalogLimiter,async(req,res)=>{
     try {
         //fetch latest 8 records
         const newArrivals = await Product.find().sort({ createdAt:-1}).limit(8);
@@ -236,7 +237,7 @@ router.get("/new-arrivals",async(req,res)=>{
 //@route GET /api/products/best-seller
 //@desc retrieve  products with highest rating
 //@access Public
-router.get("/best-seller",async(req,res)=>{
+router.get("/best-seller",searchCatalogLimiter,async(req,res)=>{
     try {
         const bestSeller = await Product.findOne().sort({rating: -1});
         if(bestSeller){
@@ -255,7 +256,7 @@ router.get("/best-seller",async(req,res)=>{
 //@route GET /api/products/:id
 //@desc retrieve a single product by ID
 //@access Public
-router.get("/:id",async(req,res)=>{
+router.get("/:id",searchCatalogLimiter,async(req,res)=>{
     try {
         const product=await Product.findById(req.params.id);
         if(product){
@@ -273,7 +274,7 @@ router.get("/:id",async(req,res)=>{
 //@route GET /api/products/similar/:id
 //@desc retrieve similar products based on current gender and category
 //@access Public
-router.get("/similar/:id",async(req,res)=>{
+router.get("/similar/:id",searchCatalogLimiter,async(req,res)=>{
     const {id}=req.params;
     try {
         const product=await Product.findById(id);

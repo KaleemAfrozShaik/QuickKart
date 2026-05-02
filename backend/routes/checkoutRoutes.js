@@ -4,12 +4,13 @@ const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
 const {protect}=require("../middleware/authMiddleware");
+const {checkoutLimiter}=require("../middleware/rateLimitMiddleware");
 
 const router = express.Router();
 //@route POST /api/checkout
 //@desc Create a new checkput session
 //@access Private
-router.post("/",protect,async (req,res)=>{
+router.post("/",protect,checkoutLimiter,async (req,res)=>{
     const {checkoutItems, shippingAddress, paymentMethod, totalPrice}=req.body;
     if(!checkoutItems || checkoutItems.length==0){
         return res.status(400).json({message:"No items in the checkout"});

@@ -23,6 +23,11 @@ const PORT=process.env.PORT || 3000;
 
 //connect to mongo db
 connectDB();
+
+const { generalApiLimiter } = require("./middleware/rateLimitMiddleware");
+
+// Apply general API rate limiter to all /api/ routes
+app.use("/api/", generalApiLimiter);
 app.get("/",(req,res)=>{
     res.send("WELCOME TO QUICKKART API!");
 });
